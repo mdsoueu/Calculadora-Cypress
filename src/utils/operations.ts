@@ -1,10 +1,10 @@
 export const OPERATIONS = {
   "+": sum,
   "-": subtract,
-  x: multiply,
+  "x": multiply,
   "/": divide,
   "=": equal,
-  AC: allClear,
+  "AC": allClear,
 };
 
 export function sum(a: number, b: number) {

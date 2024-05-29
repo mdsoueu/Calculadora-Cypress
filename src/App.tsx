@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Display from "./components/Display";
 import ButtonsPanel from "./components/ButtonsPanel";
 import { isNumber } from "./utils/isNumber";
@@ -7,16 +7,15 @@ import { removeZeroLeft } from "./utils/removeZeroLeft";
 import { calculate } from "./utils/calculate";
 
 function App() {
-  const [displayNumber, setDisplayNumber] = useState<string | null>(null);
+  const [displayNumber, setDispayNumber] = useState<string | null>(null);
   const [accumulator, setAccumulator] = useState<string>("0");
   const [operator, setOperator] = useState<string | null>(null);
   const [isNewNumber, setIsNewNumber] = useState<boolean>(true);
   const [showingResult, setShowingResult] = useState<boolean>(false);
-  const lastPressButton = useRef<string>("");
 
   const handleClick = (buttonName: string) => {
     if (buttonName === "AC") {
-      setDisplayNumber(null);
+      setDispayNumber(null);
       setAccumulator("0");
       setOperator(null);
       setIsNewNumber(true);
@@ -24,31 +23,14 @@ function App() {
       return;
     }
 
-    if (
-      lastPressButton.current != "" &&
-      !isNumber(buttonName) &&
-      !isDot(buttonName) &&
-      buttonName !== "="
-    ) {
-      setOperator(buttonName);
-      return;
-    }
-
-    lastPressButton.current = "";
-
     if (isNumber(buttonName) || isDot(buttonName)) {
-      if (isNewNumber) {
-        setAccumulator(displayNumber!);
-      }
       setIsNewNumber(false);
-      return setDisplayNumber((accumulator) => {
+      return setDispayNumber((accumulator) => {
         return removeZeroLeft(
           isNewNumber ? buttonName : accumulator + buttonName
         );
       });
     }
-
-    lastPressButton.current = buttonName;
 
     setIsNewNumber(true);
 
@@ -65,22 +47,16 @@ function App() {
 
     if (operator && (!showingResult || buttonName === "=")) {
       if (showingResult) {
-        setDisplayNumber(calculate(operator, displayNumber!, accumulator));
+        setDispayNumber(calculate(operator, displayNumber!, accumulator));
       } else {
-        setDisplayNumber(calculate(operator, accumulator, displayNumber!));
+        setDispayNumber(calculate(operator, accumulator, displayNumber!));
       }
     }
   };
 
   return (
     <div className="calculator">
-      <Display
-        value={
-          displayNumber == "Infinity" || accumulator == "Infinity"
-            ? "Não é possível dividir por zero"
-            : displayNumber?.toString() || "0"
-        }
-      />
+      <Display value={displayNumber || "0"} />
       <ButtonsPanel onClick={handleClick} />
     </div>
   );
